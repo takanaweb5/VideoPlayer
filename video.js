@@ -1,3 +1,4 @@
+const skipTimes = [-10, -3, 10, 30];
 let player;
 window.onload = onLoad;
 
@@ -119,7 +120,6 @@ function CreateSkip() {
             </div>
         </div>
     `
-    const skipTimes = [-10, -3, 10, 30];
     for(i=0;i<4;i++){
         newElement = newElement.replace("{???" + i +"}", skipTimes[i]);
         newElement = newElement.replace("{???" + i +"}", Math.abs(skipTimes[i]));
@@ -160,7 +160,6 @@ function CreateControlBarSkip() {
             </svg>
         </div>
     `
-    const skipTimes = [-10, -3, 10, 30];
     for(i=0;i<4;i++){
         newElement = newElement.replace("{???" + i +"}", skipTimes[i]);
         newElement = newElement.replace("{???" + i +"}", Math.abs(skipTimes[i]));
