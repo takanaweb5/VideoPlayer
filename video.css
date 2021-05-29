@@ -1,0 +1,144 @@
+.video-js{
+    font-size: 14px;
+}
+
+/* 動画上のplayボタン */
+.video-js.vjs-paused .vjs-big-play-button{ 
+    display: block;
+}
+.video-js.vjs-error .vjs-big-play-button{
+    display: none;
+}
+
+/* タイムバー */
+.video-js .vjs-progress-control {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: .5em;
+    top: -.5em;
+}
+.video-js .vjs-progress-control .vjs-load-progress,
+.video-js .vjs-progress-control .vjs-play-progress,
+.video-js .vjs-progress-control .vjs-progress-holder {
+    height: 100%;
+}
+.video-js .vjs-progress-control .vjs-play-progress:before{
+    display: none;
+}
+.video-js .vjs-progress-control .vjs-progress-holder {
+    margin: 0;
+}
+.video-js .vjs-progress-control:hover {
+    height: 1.2em;
+    top: -1.2em;
+}
+.video-js .vjs-play-progress {
+    background-color: #cc181e
+}
+.video-js .vjs-load-progress {
+    background: rgba(255,255,255,0.3);
+}
+
+/* 画面下部のメニュー(controlbar) */
+.video-js .vjs-control-bar {
+    display: flex;
+    background-color: rgba(0,0,0,0.3);
+    color: #ffffff;
+    user-select: none;
+}
+
+/* 再生時間 0:00 / 0:00  */
+.video-js .vjs-time-control{
+    display:inline;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.video-js .vjs-time-control span{
+    vertical-align: center;
+    font-size: 17px;
+}
+.video-js .vjs-time-divider{
+    text-align: center;
+}
+
+/* 最大化ボタン  */
+.video-js .vjs-fullscreen-control {
+    position: absolute;
+    right: 10px;
+}
+
+/*** ユーザ定義コントロール ***/
+/* skipボタン */
+svg {
+    user-select: none;
+}
+.video-js .skip {
+    position: absolute;
+    display: flex;
+    justify-content: space-evenly;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    padding-left: 20%;
+    padding-right: 20%;
+    transform: translateY(-50%) translateX(-50%);
+    font-size: 2.5em;
+    line-height: 2.3em;
+    height: 2.5em;
+    opacity: 0;
+    transition: opacity 1.0s;
+}
+.skip:hover {   
+    opacity: 0.6;
+}
+.skip svg:hover {   
+    cursor : pointer;
+}
+.video-js .skip div{
+    width: 3em;
+    height: 3em;
+    border-radius: 3em;
+    background-color: rgba(115,133,159,0.3);
+}
+.video-js .skip svg{
+    position: relative;
+    top: 0.25em;
+    left: 0.25em;
+}
+
+/* controlbar内にskipボタン */
+.skip2 {
+    position: absolute;
+    right: 210px;
+    display:inline;
+    vertical-align: center;
+    top: 0.5em;
+    font-size: 12px;
+}
+.skip2 text{
+    font-size: 17px;
+}
+.skip2 svg{
+    cursor : pointer;
+}
+
+/* 再生速度変更ボタン */
+.changeRate {
+    position: absolute;
+    right: 80px;
+    font-size: 17px;
+    display:inline;
+    vertical-align: center;
+    line-height: 2.4;
+}
+.changeRate button{
+    cursor : pointer;
+}
+
+/*** video.js以外 ***/
+.uri{
+    resize: none;
+    width: 100%;
+}
