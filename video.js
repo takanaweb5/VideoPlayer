@@ -83,9 +83,6 @@ function CreateVideoPlayer() {
 
 // skipボタンコンポーネントの作成
 function CreateSkip() {
-    const skipTimes = [-10, -3, 10, 30];
-    const Component = videojs.getComponent('Component');
-    const result = new Component(player);
     let newElement = `
         <div class="skip" id="skip">
             <div class="skipbtn">
@@ -122,19 +119,19 @@ function CreateSkip() {
             </div>
         </div>
     `
+    const skipTimes = [-10, -3, 10, 30];
     for(i=0;i<4;i++){
         newElement = newElement.replace("{???" + i +"}", skipTimes[i]);
         newElement = newElement.replace("{???" + i +"}", Math.abs(skipTimes[i]));
     }
+    const Component = videojs.getComponent('Component');
+    const result = new Component(player);
     result.el().innerHTML = newElement;
     return result;
 }
 
 // controlbar内のskipボタンコンポーネントの作成
 function CreateControlBarSkip() {
-    const skipTimes = [-10, -3, 10, 30];
-    const Component = videojs.getComponent('Component');
-    const result = new Component(player);
     let newElement = `
         <div class="skip2">
             <svg onClick="skip({???0})" width="2.5em" height="2.5em" viewBox="0 0 32 32">
@@ -163,10 +160,13 @@ function CreateControlBarSkip() {
             </svg>
         </div>
     `
+    const skipTimes = [-10, -3, 10, 30];
     for(i=0;i<4;i++){
         newElement = newElement.replace("{???" + i +"}", skipTimes[i]);
         newElement = newElement.replace("{???" + i +"}", Math.abs(skipTimes[i]));
     }
+    const Component = videojs.getComponent('Component');
+    const result = new Component(player);
     result.el().innerHTML = newElement;
     return result;
 }
