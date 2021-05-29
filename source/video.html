@@ -1,0 +1,338 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=utf-8">
+<title>動画プレイヤー</title>
+<link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
+<style type="text/css">
+<!--
+.video-js{
+    font-size: 14px;
+}
+
+/* 動画上のplayボタン */
+.video-js.vjs-paused .vjs-big-play-button{ 
+    display: block;
+}
+.video-js.vjs-error .vjs-big-play-button{
+    display: none;
+}
+
+/* タイムバー */
+.video-js .vjs-progress-control {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: .5em;
+    top: -.5em;
+}
+.video-js .vjs-progress-control .vjs-load-progress,
+.video-js .vjs-progress-control .vjs-play-progress,
+.video-js .vjs-progress-control .vjs-progress-holder {
+    height: 100%;
+}
+.video-js .vjs-progress-control .vjs-play-progress:before{
+    display: none;
+}
+.video-js .vjs-progress-control .vjs-progress-holder {
+    margin: 0;
+}
+.video-js .vjs-progress-control:hover {
+    height: 1.2em;
+    top: -1.2em;
+}
+.video-js .vjs-play-progress {
+    background-color: #cc181e
+}
+.video-js .vjs-load-progress {
+    background: rgba(255,255,255,0.3);
+}
+
+/* 画面下部のメニュー(controlbar) */
+.video-js .vjs-control-bar {
+    display: flex;
+    background-color: rgba(0,0,0,0.3);
+    color: #ffffff;
+    user-select: none;
+}
+
+/* 再生時間 0:00 / 0:00  */
+.video-js .vjs-time-control{
+    display:inline;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.video-js .vjs-time-control span{
+    vertical-align: center;
+    font-size: 17px;
+}
+.video-js .vjs-time-divider{
+    text-align: center;
+}
+
+/* 最大化ボタン  */
+.video-js .vjs-fullscreen-control {
+    position: absolute;
+    right: 10px;
+}
+
+/*** ユーザ定義コントロール ***/
+/* skipボタン */
+svg {
+    user-select: none;
+}
+.video-js .skip {
+    position: absolute;
+    display: flex;
+    justify-content: space-evenly;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    padding-left: 20%;
+    padding-right: 20%;
+    transform: translateY(-50%) translateX(-50%);
+    font-size: 2.5em;
+    line-height: 2.3em;
+    height: 2.5em;
+    opacity: 0;
+    transition: opacity 1.0s;
+}
+.skip:hover {   
+    opacity: 0.6;
+}
+.skip svg:hover {   
+    cursor : pointer;
+}
+.video-js .skip div{
+    width: 3em;
+    height: 3em;
+    border-radius: 3em;
+    background-color: rgba(115,133,159,0.3);
+}
+.video-js .skip svg{
+    position: relative;
+    top: 0.25em;
+    left: 0.25em;
+}
+
+/* controlbar内にskipボタン */
+.skip2 {
+    position: absolute;
+    right: 210px;
+    display:inline;
+    vertical-align: center;
+    top: 0.5em;
+    font-size: 12px;
+}
+.skip2 text{
+    font-size: 17px;
+}
+.skip2 svg{
+    cursor : pointer;
+}
+
+/* 再生速度変更ボタン */
+.changeRate {
+    position: absolute;
+    right: 80px;
+    font-size: 17px;
+    display:inline;
+    vertical-align: center;
+    line-height: 2.4;
+}
+.changeRate button{
+    cursor : pointer;
+}
+
+/*** video.js以外 ***/
+.uri{
+    resize: none;
+    width: 100%;
+}
+--> 
+</style>
+<script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script>
+<script>
+let url0 ='https://vjs.zencdn.net/v/oceans.mp4';
+let player;
+window.onload = onLoad;
+
+function onLoad() {
+    CreateVideoPlayer();
+    const herf = new URL(window.location.href);
+    const videoUri = herf.search.substr(1);
+    document.getElementById("url").value = videoUri;
+};
+
+function onOpen() {
+    let url = document.getElementById("url").value;
+    if (!url) {url = url0};
+    loadVideo(url);
+};
+
+function loadVideo(url) {
+    const data = {
+        src: url,
+        type: 'video/mp4',
+    };
+    player.pause();
+    player.src(data);
+    player.load(data);
+};
+
+function onPause(e) {
+    if (e.target.tagName.toLowerCase() != "div") {return};
+    if (player.paused()){
+        player.play();
+    }else{
+        player.pause();
+    }
+};
+
+function changeRate(rate) {
+    const newRate = (player.playbackRate() + rate).toFixed(1);
+    player.playbackRate(newRate);
+};
+
+function skip(sec) {
+    let newTime = player.currentTime() + sec;
+    player.currentTime(newTime);
+};
+
+function CreateVideoPlayer() {
+    player = videojs('my-player',
+    { 
+        controls: true, 
+        preload: 'auto',
+        autoplay: false,
+        muted: false,
+        controlBar: {
+            children: [
+                {name: 'playToggle'},         
+                {name: 'progressControl'},   
+                {name: 'currentTimeDisplay'}, 
+                {name: 'TimeDivider'},   
+                {name: 'durationDisplay'},  
+                {name: 'volumePanel',  
+                    inline: true,  
+                },
+                {name: 'FullscreenToggle'},
+            ]
+    },
+    });
+
+    let Component = videojs.getComponent('Component');
+    let newComponent;
+    let newElement;
+
+    // skipボタンの追加
+    const skipTimes = [-10, -3, 10, 30];
+    newComponent = new Component(player);
+    newElement = `
+        <div class="skip" id="skip">
+            <div class="skipbtn">
+                <svg onClick="skip({???0})" width="2.5em" height="2.5em" viewBox="0 0 32 32">
+                    <path d="M1,16 c0,8.284,6.716,15,15,15s15-6.716,15-15S24.284,1,16,1C10.657,1,5.966,3.794,3.309,8" fill="none" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                    <polyline fill="none" points="3,0 3,8 11,8" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                    <text x="51%" y="53%" font-size="50%" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" fill="#fff" stroke="#fff" stroke-width="0"
+                    >{???0}</text>
+                </svg>
+            </div>
+            <div class="skipbtn">
+                <svg onClick="skip({???1})" width="2.5em" height="2.5em" viewBox="0 0 32 32">
+                    <path d="M1,16 c0,8.284,6.716,15,15,15s15-6.716,15-15S24.284,1,16,1C10.657,1,5.966,3.794,3.309,8" fill="none" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                    <polyline fill="none" points="3,0 3,8 11,8" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                    <text x="51%" y="53%" font-size="50%" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" fill="#fff" stroke="#fff" stroke-width="0"
+                    >{???1}</text>
+                </svg>
+            </div>
+            <div class="skipbtn">
+                <svg onClick="skip({???2})" width="2.5em" height="2.5em" viewBox="0 0 32 32">
+                    <path d="M31,16 c0,8.284-6.716,15-15,15S1,24.284,1,16S7.716,1,16,1c5.343,0,10.034,2.794,12.691,7" fill="none" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                    <polyline fill="none" points="29,0 29,8 21,8" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                    <text x="51%" y="53%" font-size="50%" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" fill="#fff" stroke="#fff" stroke-width="0"
+                    >{???2}</text>
+                </svg>
+            </div>
+            <div class="skipbtn">
+                <svg onClick="skip({???3})" width="2.5em" height="2.5em" viewBox="0 0 32 32">
+                    <path d="M31,16 c0,8.284-6.716,15-15,15S1,24.284,1,16S7.716,1,16,1c5.343,0,10.034,2.794,12.691,7" fill="none" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                    <polyline fill="none" points="29,0 29,8 21,8" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                    <text x="51%" y="53%" font-size="50%" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" fill="#fff" stroke="#fff" stroke-width="0"
+                    >{???3}</text>
+                </svg>
+            </div>
+        </div>
+    `
+    for(i=0;i<4;i++){
+        newElement = newElement.replace("{???" + i +"}", skipTimes[i]);
+        newElement = newElement.replace("{???" + i +"}", Math.abs(skipTimes[i]));
+    }
+    newComponent.el().innerHTML = newElement;
+    player.addChild(newComponent, {});
+
+    document.getElementById("skip").addEventListener("click", onPause);
+
+    // 再生速度変更ボタンの作成
+    newComponent = new Component(player);
+    newElement = `
+        <div class="changeRate">
+            <button onClick="changeRate(-0.1)">&nbsp;◀</button>
+            <span onClick="player.playbackRate(1.0)" class="ratevalue" id="ratevalue">1.0x</span>
+            <button onClick="changeRate(+0.1)">▶&nbsp;</button>
+        </div>
+    `
+    newComponent.el().innerHTML = newElement
+    player.getChild("controlBar").addChild(newComponent, {}, 6);
+
+    // 再生速度変更時
+    player.on("ratechange",function(){
+        document.getElementById("ratevalue").innerHTML = (player.playbackRate()).toFixed(1) + 'x'; 
+    });
+
+    // controlbar内にskipボタン追加
+    newComponent = new Component(player);
+    newElement = `
+        <div class="skip2">
+            <svg onClick="skip({???0})" width="2.5em" height="2.5em" viewBox="0 0 32 32">
+                <path d="M1,16 c0,8.284,6.716,15,15,15s15-6.716,15-15S24.284,1,16,1C10.657,1,5.966,3.794,3.309,8" fill="none" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                <polyline fill="none" points="3,0 3,8 11,8" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                <text x="51%" y="53%" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" fill="#fff" stroke="#fff" stroke-width="0"
+                >{???0}</text>
+            </svg>
+            <svg onClick="skip({???1})" width="2.5em" height="2.5em" viewBox="0 0 32 32">
+                <path d="M1,16 c0,8.284,6.716,15,15,15s15-6.716,15-15S24.284,1,16,1C10.657,1,5.966,3.794,3.309,8" fill="none" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                <polyline fill="none" points="3,0 3,8 11,8" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                <text x="51%" y="53%" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" fill="#fff" stroke="#fff" stroke-width="0"
+                >{???1}</text>
+            </svg>
+            <svg onClick="skip({???2})" width="2.5em" height="2.5em" viewBox="0 0 32 32">
+                <path d="M31,16 c0,8.284-6.716,15-15,15S1,24.284,1,16S7.716,1,16,1c5.343,0,10.034,2.794,12.691,7" fill="none" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                <polyline fill="none" points="29,0 29,8 21,8" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                <text x="51%" y="53%" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" fill="#fff" stroke="#fff" stroke-width="0"
+                >{???2}</text>
+            </svg>
+            <svg onClick="skip({???3})" width="2.5em" height="2.5em" viewBox="0 0 32 32">
+                <path d="M31,16 c0,8.284-6.716,15-15,15S1,24.284,1,16S7.716,1,16,1c5.343,0,10.034,2.794,12.691,7" fill="none" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                <polyline fill="none" points="29,0 29,8 21,8" stroke="#fff" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+                <text x="51%" y="53%" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" fill="#fff" stroke="#fff" stroke-width="0"
+                >{???3}</text>
+            </svg>
+        </div>
+    `
+    for(i=0;i<4;i++){
+        newElement = newElement.replace("{???" + i +"}", skipTimes[i]);
+        newElement = newElement.replace("{???" + i +"}", Math.abs(skipTimes[i]));
+    }
+    newComponent.el().innerHTML = newElement;
+    player.getChild("controlBar").addChild(newComponent, {}, 6);
+};
+</script>
+
+</head>
+<body>
+    <textarea id="url" class="uri"></textarea>
+    <button type="button" onClick="onOpen()">開く</button>
+    <video id="my-player" class="video-js" width="800"height="450"></video>
+</body>
+</html>
