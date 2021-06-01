@@ -7,6 +7,19 @@ function onLoad() {
     const videoUri = herf.search.substr(1);
     document.getElementById("url").value = videoUri;
     CreateVideoPlayer();
+
+    //カーソルキーでskipなどを操作させる
+    player.el().addEventListener( "keydown", onKeydown );
+};
+
+//キーが押されたときに呼び出される関数
+function onKeydown(e) {
+    if( e.keyCode === 37 ) skip(skipTimes[1]); //「左ボタン」が押されたとき
+    if( e.keyCode === 39 ) skip(skipTimes[2]); //「右ボタン」が押されたとき
+    if( e.keyCode === 38 ) changeRate(+0.1);   //「上ボタン」が押されたとき
+    if( e.keyCode === 40 ) changeRate(-0.1);   //「下ボタン」が押されたとき
+    if( e.keyCode === 13 ) onPause(e);   //「Enter」が押されたとき
+    if( e.keyCode === 32 ) onPause(e);   //「Space」が押されたとき
 };
 
 function onOpen() {
@@ -78,6 +91,12 @@ function CreateVideoPlayer() {
     player.getChild("controlBar").addChild(CreateRateChange(), {}, 6);
     player.on("ratechange",function(){　// 再生速度変更時
         document.getElementById("ratevalue").innerHTML = (player.playbackRate()).toFixed(1) + 'x'; 
+        }
+    );
+
+    // カーソルキーの押下イベントを取得できるように、controlからfocusを奪う
+    player.on(["pause", "play", "fullscreenchange", "volumechange"], function () {
+        player.focus();
         }
     );
 };
