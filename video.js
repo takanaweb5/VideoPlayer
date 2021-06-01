@@ -96,7 +96,7 @@ function CreateVideoPlayer() {
     );
 
     // カーソルキーの押下イベントを取得できるように、controlからfocusを奪う
-    player.on(["pause", "play", "fullscreenchange", "volumechange"], function () {
+    player.on(["pause", "play", "fullscreenchange", "volumechange", "timeupdate"], function () {
         player.focus();
         }
     );
