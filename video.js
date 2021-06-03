@@ -20,7 +20,9 @@ function onKeydown(e) {
     if( e.keyCode === 40 ) changeRate(-0.1);   //「下ボタン」が押されたとき
     if( e.keyCode === 13 ) onPause(e);   //「Enter」が押されたとき
     if (e.keyCode === 32) onPause(e);   //「Space」が押されたとき
-    document.getElementById("btn").innerHTML = 'k:' + e.keyCode;
+    document.getElementById("btn").innerHTML = e.keyCode;
+    const component = player.children()[player.children().length - 1]; 
+    component.focus();
 };
 
 function onOpen() {
