@@ -21,8 +21,6 @@ function onKeydown(e) {
     if( e.keyCode === 13 ) onPause(e);   //「Enter」が押されたとき
     if (e.keyCode === 32) onPause(e);   //「Space」が押されたとき
     document.getElementById("btn").innerHTML = 'A' + e.keyCode;
-    const component = player.children()[0]; 
-    component.focus();
 };
 
 function onOpen() {
@@ -99,7 +97,8 @@ function CreateVideoPlayer() {
 
     // カーソルキーの押下イベントを取得できるように、controlからfocusを奪う
     player.on(["pause", "play", "fullscreenchange", "volumechange", "timeupdate"], function () {
-        player.focus();
+        const component = player.children()[player.children().length - 1]; 
+        component.focus();
         }
     );
 };
