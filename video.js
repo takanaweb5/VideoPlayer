@@ -96,12 +96,12 @@ function CreateVideoPlayer() {
         }
     );
 
-    // // カーソルキーの押下イベントを取得できるように、controlからfocusを奪う
-    // player.on(["pause", "play", "fullscreenchange", "volumechange", "timeupdate"], function () {
-    //     const component = player.children()[player.children().length - 1]; 
-    //     player.focus();
-    //     }
-    // );
+    // カーソルキーの押下イベントを取得できるように、controlからfocusを奪う
+    player.on(["pause", "play", "fullscreenchange", "volumechange", "timeupdate"], function () {
+        const component = player.children()[player.children().length - 1]; 
+        player.focus();
+        }
+    );
 };
 
 // skipボタンコンポーネントの作成
