@@ -20,7 +20,8 @@ function onKeydown(e) {
     if( e.keyCode === 40 ) changeRate(-0.1);   //「下ボタン」が押されたとき
     if( e.keyCode === 13 ) onPause(e);   //「Enter」が押されたとき
     if (e.keyCode === 32) onPause(e);   //「Space」が押されたとき
-    document.getElementById("btn").innerHTML = 'b' + e.keyCode;
+    document.getElementById("btn").innerHTML = 'C' + e.keyCode;
+    console.log(player.children());
 };
 
 function onOpen() {
@@ -95,12 +96,12 @@ function CreateVideoPlayer() {
         }
     );
 
-    // カーソルキーの押下イベントを取得できるように、controlからfocusを奪う
-    player.on(["pause", "play", "fullscreenchange", "volumechange", "timeupdate"], function () {
-        const component = player.children()[player.children().length - 1]; 
-        component.focus();
-        }
-    );
+    // // カーソルキーの押下イベントを取得できるように、controlからfocusを奪う
+    // player.on(["pause", "play", "fullscreenchange", "volumechange", "timeupdate"], function () {
+    //     const component = player.children()[player.children().length - 1]; 
+    //     player.focus();
+    //     }
+    // );
 };
 
 // skipボタンコンポーネントの作成
